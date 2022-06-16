@@ -18,8 +18,9 @@ else
 fi
 
 
-if [[ -v "$GITHUB_ENV" ]]; then
+
+if test -z ${$GITHUB_ENV+y}; then
   echo "export APP_VERSION=$(node -p -e 'require("./package.json").version')" >> $GITHUB_ENV
-elif [[ -v "$BASH_ENV" ]]; then
+elif test -z ${$BASH_ENV+y}; then
   echo "export APP_VERSION=$(node -p -e 'require("./package.json").version')" >> $BASH_ENV
 fi
