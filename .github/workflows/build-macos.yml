@@ -13,15 +13,15 @@ name: "macOS build"
 
 on:
   push:
-    branches: [ enhancement/macosBuilds ]
+    branches: [enhancement/macosBuilds]
     paths-ignore:
-      - 'README.md'
-      - 'SECURITY.md'
-      - '.gitmodules'
-      - '.gitignore'
-      - 'LICENSE'
+      - "README.md"
+      - "SECURITY.md"
+      - ".gitmodules"
+      - ".gitignore"
+      - "LICENSE"
   schedule:
-    - cron: '44 20 * * 1'
+    - cron: "44 20 * * 1"
 
 jobs:
   analyze:
@@ -35,19 +35,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript' ]
+        language: ["javascript"]
 
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '12.4'
+          xcode-version: "12.4"
 
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           submodules: true
 
-      - name: "Change Version"
+      - name: Change Version
         run: |
           sudo chmod +x resources/version.sh
           ./resources/version.sh || true
@@ -56,9 +56,12 @@ jobs:
       - name: Sign in to EVS
         run: |
           python3 -m pip install --upgrade castlabs-evs
-          python3 -m castlabs_evs.account refresh -A ${{ secrets.EVS_ACCOUNT_NAME }} -P ${{ secrets.EVS_PASSWD }} 
+          python3 -m castlabs_evs.account refresh -A ${{ secrets.EVS_ACCOUNT_NAME }} -P ${{ secrets.EVS_PASSWD }}
 
-      - name: Build
+      - name: Install Node Dependencies
+        run: yarn install
+
+      - name: Build dmg
         env:
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -69,16 +72,13 @@ jobs:
           PSC_NAME: ${{ secrets.PSC_NAME }}
           DEVELOPER_DIR: /Applications/Xcode_12.4.app/Contents/Developer
         run: |
-          yarn install
           cp resources/verror-types node_modules/@types/verror/index.d.ts
           cp resources/macPackager.js node_modules/app-builder-lib/out/macPackager.js 
           yarn dist:universalNotWorking -p never
 
-
       - name: Add license to dmg
         run: |
           npx dmg-license resources/license.json dist/*.dmg
-
 
       - name: Import
         uses: apple-actions/import-codesign-certs@v1
@@ -86,7 +86,7 @@ jobs:
           p12-file-base64: ${{ secrets.CSC_LINK }}
           p12-password: ${{ secrets.CSC_KEY_PASSWORD }}
 
-      - name: Create PKG manually
+      - name: Build pkg
         env:
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -97,11 +97,12 @@ jobs:
           xcrun altool --notarize-app --primary-bundle-id com.ciderapp.cider -f dist/Cider.pkg  --username ${{ secrets.APPLEID }} --password ${{ secrets.APPLEIDPASS }}
           sleep 5m
           xcrun stapler staple dist/Cider.pkg || true
-          mv dist/*.dmg dist/Cider-$APP_VERSION.dmg
 
       - name: Change File Versions
         run: |
-
+          sudo chmod +x resources/version.sh
+          ./resources/version.sh || true
+          echo $APP_VERSION
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
@@ -113,6 +114,5 @@ jobs:
             dist/*.dmg
             dist/*.pkg
 
-
       - name: LS
-        run: ls
+        run: ls dist
