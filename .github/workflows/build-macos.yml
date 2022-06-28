@@ -1,4 +1,4 @@
-name: "macOS build"
+name: "macOS Release"
 
 on:
   push:
@@ -9,11 +9,9 @@ on:
       - ".gitmodules"
       - ".gitignore"
       - "LICENSE"
-  schedule:
-    - cron: "44 20 * * 1"
 
 jobs:
-  analyze:
+  build-macos:
     name: macOS build
     runs-on: macos-11
     permissions:
@@ -38,9 +36,7 @@ jobs:
 
       - name: Change Version
         run: |
-          sudo chmod +x resources/version.sh
-          sudo ./resources/version.sh || true
-          echo $APP_VERSION
+          curl -s https://api.github.com/repos/ciderapp/Cider/branches/stable | grep sha | cut -d '"' -f 4 | sed 's/v//' | xargs | cut -d' ' -f1
 
       - name: Sign in to EVS
         run: |
