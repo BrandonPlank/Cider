@@ -15,6 +15,7 @@
 
 :root {
   --appleEase: cubic-bezier(0.42, 0, 0.58, 1);
+  --borderColor: rgb(200 200 200 / 16%);
   --mediaItemShadow: inset 0px 0px 0px 1px rgb(200 200 200 / 16%);
   --mediaItemShadow-Shadow: 0 8px 40px rgb(0 0 0 / 0.55);
   --mediaItemShadow-ShadowSubtle: 0 4px 14px rgb(0 0 0 / 10%);
@@ -50,6 +51,7 @@
   --textColor: #eee;
   --replayGradient: linear-gradient(45deg, hsl(248deg 58% 29%), hsl(13deg 41% 42%));
   --glassFilter: blur(16px) saturate(180%); 
+  --glassFilterHeavy: blur(64px) saturate(280%);
   --sidebarWidth: 260px;
 }
 
@@ -2073,7 +2075,7 @@ input[type="range"].web-slider.display--small::-webkit-slider-thumb {
   align-items: center;
 
   .fs-row {
-    flex-grow: 1;
+    flex-grow: 0.5;
   }
 
   .playback-button--small.active {
@@ -3247,7 +3249,10 @@ input[type="range"].web-slider.display--small::-webkit-slider-thumb {
   z-index: 100001;
   float: left;
   width: 100%;
-  margin: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   cursor: pointer;
 }
 
@@ -3419,20 +3424,7 @@ body.no-gpu {
   }
 }
 
-.keybindings-border {
-  padding-left: 15px;
-  padding-right: 15px;
-  border-style: solid;
-  border-radius: 5px;
-  border-color: #CBCBCB;
-}
 
-.keybinding-text {
-  width: 95px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 .qrimg {
   width: -webkit-fill-available;
@@ -3591,14 +3583,31 @@ body[platform='darwin'] {
   display: none;
 }
 
-.keybinds-page .md-option-header {
-  padding: 0px 0px;
+.keybinds-page{ 
+  
+    .md-option-header {
+        padding: 10px 0px;
+        border-bottom: unset;
+        border-top: unset;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0);
+        font-size: 2em;
+    }
+
+    .md-option-header-sub {
+      padding: 15px 10px;
       border-bottom: unset;
       border-top: unset;
-      font-weight: 600;
       background: rgba(255, 255, 255, 0);
-      font-size: 2em;
-  }
+      font-weight: 600;
+      font-size: 1.7em;
+    }
+
+    .md-option-line{
+      padding: 15px 20px;
+      font-size: 0.90em;
+    }
+}
 
 .content-inner.keybinds-page {
   top: var(--navigationBarHeight);

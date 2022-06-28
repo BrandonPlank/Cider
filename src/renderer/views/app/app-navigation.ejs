@@ -105,7 +105,7 @@
               $root.getLz("term.about")
             }}</span>
           </button>
-          <button class="usermenu-item" @click="appRoute('settings')">
+          <button class="usermenu-item" @click="modals.settings = true">
             <span class="usermenu-item-icon">
               <%- include("../svg/settings.svg") %>
             </span>
@@ -119,6 +119,14 @@
             </span>
             <span class="usermenu-item-name">{{
               $root.getLz("term.logout")
+            }}</span>
+          </button>
+          <button class="usermenu-item" @click="quit()">
+            <span class="usermenu-item-icon" style="right: 2.5px">
+              <%- include("../svg/x.svg") %>
+            </span>
+            <span class="usermenu-item-name">{{
+              $root.getLz("term.quit")
             }}</span>
           </button>
         </div>
