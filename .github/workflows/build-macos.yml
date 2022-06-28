@@ -50,7 +50,7 @@ jobs:
       - name: Change Version
         run: |
           sudo chmod +x resources/version.sh
-          ./resources/version.sh || true
+          sudo ./resources/version.sh || true
           echo $APP_VERSION
 
       - name: Sign in to EVS
@@ -97,12 +97,6 @@ jobs:
           xcrun altool --notarize-app --primary-bundle-id com.ciderapp.cider -f dist/Cider.pkg  --username ${{ secrets.APPLEID }} --password ${{ secrets.APPLEIDPASS }}
           sleep 5m
           xcrun stapler staple dist/Cider.pkg || true
-
-      - name: Change File Versions
-        run: |
-          sudo chmod +x resources/version.sh
-          ./resources/version.sh || true
-          echo $APP_VERSION
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.3
